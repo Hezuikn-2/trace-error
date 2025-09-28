@@ -1,0 +1,18 @@
+[package]
+name = "errs"
+version = "0.1.0"
+edition = "2024"
+
+[profile.release]
+lto = true
+codegen-units = 1
+
+[dependencies]
+#slab = "*"
+#bumpalo = "*"
+#any_vec = "*"
+#dyn_vec = "*"
+#dynsequence = { version = "0.1.0-alpha.4", features = ["unstable"] }
+#unsized-vec = "0.0.2-alpha.13"
+#dyn-slice = "*"
+thin-vec = "*"
