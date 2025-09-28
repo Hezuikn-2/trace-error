@@ -3,7 +3,7 @@ use alloc::{
     vec,
     vec::Vec,
 };
-use core::error::Error;
+use core::{convert::identity, error::Error, intrinsics::const_eval_select};
 use core::fmt::{self, Debug, Display};
 use core::panic::Location;
 
@@ -12,7 +12,7 @@ impl<T: Debug + Display + Error + 'static> IF for T {}
 
 pub struct Err {
     pub loc: Vec<Location<'static>>,
-    pub org: ThinBox<(dyn IF)>,
+    pub org: ThinBox<dyn IF>,
 }
 impl Debug for Err {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -36,11 +36,15 @@ impl Error for Err {
     }
 }
 
-impl From<Err> for Err {
+impl const From<Err> for Err {
     #[track_caller]
     fn from(x: Err) -> Err {
-        let mut v = x.loc;
-        v.push(*Location::caller());
+        #[track_caller]
+        fn rt(mut v: Vec<Location<'_>>) -> Vec<Location<'_>> {
+            v.push(*Location::caller());
+            v
+        }
+        let v = const_eval_select((x.loc,), identity, rt);
         Err { loc: v, org: x.org }
     }
 }
