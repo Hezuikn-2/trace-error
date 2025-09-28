@@ -1,4 +1,5 @@
-#![feature(auto_traits, negative_impls, min_specialization)]
+#![allow(internal_features)]
+#![feature(auto_traits, negative_impls, min_specialization, const_convert, const_trait_impl, core_intrinsics, const_eval_select)]
 #![feature(const_precise_live_drops, never_type, try_trait_v2)]
 #![feature(thin_box)]
 #![no_std]
