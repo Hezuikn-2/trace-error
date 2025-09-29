@@ -92,12 +92,12 @@ impl<T, E> CertainResult for StdResult<T, E> {
 
 #[derive(Debug)]
 struct Anyway<T: AsRef<str>>(pub T);
-impl<T: AsRef<str>> std::fmt::Display for Anyway<T> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl<T: AsRef<str>> core::fmt::Display for Anyway<T> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         f.write_str(self.0.as_ref())
     }
 }
-impl<T: AsRef<str> + std::fmt::Debug> std::error::Error for Anyway<T> {}
+impl<T: AsRef<str> + core::fmt::Debug> core::error::Error for Anyway<T> {}
 
 pub macro anyway($($arg:tt)*) {
     Traced::from(Anyway(format!($($arg)*)))
