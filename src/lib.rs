@@ -91,7 +91,7 @@ impl<T, E> CertainResult for StdResult<T, E> {
 }
 
 #[derive(Debug)]
-struct Anyway<T: AsRef<str>>(pub T);
+pub struct Anyway<T: AsRef<str>>(pub T);
 impl<T: AsRef<str>> core::fmt::Display for Anyway<T> {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         f.write_str(self.0.as_ref())
