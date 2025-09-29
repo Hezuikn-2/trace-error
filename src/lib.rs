@@ -2,6 +2,7 @@
 #![feature(auto_traits, negative_impls, min_specialization, const_convert, const_trait_impl, core_intrinsics, const_eval_select)]
 #![feature(const_precise_live_drops, never_type, try_trait_v2)]
 #![feature(thin_box)]
+#![feature(decl_macro)]
 #![no_std]
 
 extern crate alloc;
