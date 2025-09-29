@@ -10,16 +10,16 @@ use core::panic::Location;
 pub trait IF: Debug + Display + Error + 'static {}
 impl<T: Debug + Display + Error + 'static> IF for T {}
 
-pub struct Err {
+pub struct Traced {
     pub loc: Vec<Location<'static>>,
     pub org: ThinBox<dyn IF>,
 }
-impl Debug for Err {
+impl Debug for Traced {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         Display::fmt(self, f)
     }
 }
-impl Display for Err {
+impl Display for Traced {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_fmt(format_args!("{}\n", &*self.org))?;
 
@@ -30,33 +30,33 @@ impl Display for Err {
         return fmt::Result::Ok(());
     }
 }
-impl Error for Err {
+impl Error for Traced {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         Some(&*self.org)
     }
 }
 
-impl const From<Err> for Err {
+impl const From<Traced> for Traced {
     #[track_caller]
-    fn from(x: Err) -> Err {
+    fn from(x: Self) -> Self {
         #[track_caller]
         fn rt(mut v: Vec<Location<'_>>) -> Vec<Location<'_>> {
             v.push(*Location::caller());
             v
         }
         let v = const_eval_select((x.loc,), identity, rt);
-        Err { loc: v, org: x.org }
+        Self { loc: v, org: x.org }
     }
 }
 
 auto trait NegErr {}
 impl<T: ?Sized> NegErr for Box<T> {}
-impl !NegErr for Err {}
+impl !NegErr for Traced {}
 
-impl<T: NegErr + IF + 'static> From<T> for Err {
+impl<T: NegErr + IF + 'static> From<T> for Traced {
     #[track_caller]
-    fn from(x: T) -> Err {
-        Err {
+    fn from(x: T) -> Self {
+        Self {
             loc: vec![*Location::caller()],
             org: ThinBox::new_unsize(x),
         }
