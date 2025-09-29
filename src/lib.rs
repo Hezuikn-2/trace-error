@@ -16,11 +16,11 @@ mod err;
 mod maybe;
 
 pub use crate::{
-    err::Err,
+    err::Traced,
     maybe::Maybe::{self, *},
 };
 
-pub type R<T> = Maybe<T, Err>;
+pub type R<T> = Maybe<T, Traced>;
 
 unsafe extern "C" {
     pub safe fn link_err() -> !;
